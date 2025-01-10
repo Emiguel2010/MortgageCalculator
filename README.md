@@ -2,6 +2,8 @@
 
 A simple and user-friendly mortgage calculator built to help users understand their monthly mortgage payments, including options for property tax, PMI, insurance, and more.
 
+This is my first project and a lot of cleaning to do to get it to a stable and professional site. More to come :) 
+
 ## Why I'm Building This
 
 This project was created to help potential homebuyers make informed decisions by providing a transparent and easy-to-use mortgage calculation tool. With many financial calculators available online, the goal is to provide a cleaner, more accurate, and feature-rich alternative that gives users all the necessary tools to understand their mortgage obligations.
