@@ -24,4 +24,4 @@ To run the mortgage calculator on your local machine:
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/mortgage-calculator.git
+   git clone https://github.com/emiguel2010/mortgage-calculator.git
