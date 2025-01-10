@@ -66,3 +66,13 @@ button:hover {
 #result p {
   margin: 10px 0;
 }
+
+#payment {
+  font-weight: bold;
+  font-size: 24px;
+}
+
+#loanAfterDownPayment {
+  font-weight: bold;
+  font-size: 18px;
+}

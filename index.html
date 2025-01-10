@@ -10,8 +10,17 @@
   <div class="container">
     <h1>Mortgage Calculator</h1>
     <div class="calculator">
-      <label for="loanAmount">Loan Amount ($): 
-        <input type="text" id="loanAmount" placeholder="Enter loan amount" oninput="formatLoanAmount()">
+      <label for="loanAmount">Original Loan Amount ($): 
+        <input type="text" id="loanAmountInput" placeholder="Enter loan amount" oninput="formatLoanAmount()">
+      </label><br>
+
+      <label for="downPaymentType">Down Payment Type: 
+        <input type="radio" id="downPaymentPercent" name="downPaymentType" checked> Percent 
+        <input type="radio" id="downPaymentDollar" name="downPaymentType"> Dollar
+      </label><br>
+
+      <label for="downPayment">Down Payment: 
+        <input type="number" id="downPayment" placeholder="Enter down payment" value="0" oninput="calculateLoanAmount()">
       </label><br>
 
       <label for="interestRate">Annual Interest Rate (%): 
@@ -22,33 +31,81 @@
         <input type="number" id="loanTerm" value="30" min="1">
       </label><br>
 
+      <label for="propertyTax">Property Tax ($): 
+        <input type="text" id="propertyTax" placeholder="Enter property tax" oninput="formatCurrency('propertyTax')">
+      </label><br>
+
+      <label for="pmi">PMI (%): 
+        <input type="number" id="pmi" value="0.4" step="0.1" min="0" max="100">
+      </label><br>
+
+      <label for="homeIns">Home Insurance ($): 
+        <input type="text" id="homeIns" placeholder="Enter home insurance" oninput="formatCurrency('homeIns')">
+      </label><br>
+
+      <label for="hoa">Monthly HOA ($): 
+        <input type="text" id="hoa" placeholder="Enter HOA fees" oninput="formatCurrency('hoa')">
+      </label><br>
+
       <button onclick="calculateMortgage()">Calculate</button>
     </div>
+
     <div id="result">
-      <p>Your monthly payment is <span id="payment"></span></p>
+      <p><strong>Your monthly payment:</strong> <span id="payment"></span></p>
+      <p><strong>Loan Amount after Down Payment:</strong> <span id="loanAfterDownPayment"></span></p>
       <p id="error" style="color: red;"></p>
     </div>
   </div>
 
   <script>
+    // Format numbers with commas (for dollar values)
+    function formatCurrency(id) {
+      let input = document.getElementById(id);
+      let value = input.value.replace(/[^0-9]/g, '');
+      value = Number(value).toLocaleString();
+      input.value = value;
+    }
+
     // Format loan amount with commas
     function formatLoanAmount() {
-      let loanAmountInput = document.getElementById('loanAmount');
+      let loanAmountInput = document.getElementById('loanAmountInput');
       let loanAmount = loanAmountInput.value.replace(/[^0-9]/g, '');
       loanAmount = Number(loanAmount).toLocaleString();
       loanAmountInput.value = loanAmount;
+      calculateLoanAmount();
+    }
+
+    // Calculate loan amount after down payment based on selected type (dollar or percentage)
+    function calculateLoanAmount() {
+      let loanAmount = parseFloat(document.getElementById('loanAmountInput').value.replace(/,/g, ''));
+      let downPayment = parseFloat(document.getElementById('downPayment').value.replace(/,/g, ''));
+      let isPercent = document.getElementById('downPaymentPercent').checked;
+
+      if (isPercent) {
+        // Convert down payment to dollar value
+        downPayment = loanAmount * (downPayment / 100);
+      }
+
+      const loanAfterDownPayment = loanAmount - downPayment;
+      document.getElementById('loanAfterDownPayment').innerText = `$${loanAfterDownPayment.toLocaleString()}`;
     }
 
     // Calculate Mortgage Payment
     function calculateMortgage() {
-      const P = parseFloat(document.getElementById('loanAmount').value.replace(/,/g, ''));
+      const loanAmount = parseFloat(document.getElementById('loanAmountInput').value.replace(/,/g, ''));
+      const downPayment = parseFloat(document.getElementById('downPayment').value.replace(/,/g, ''));
+      const loanAfterDownPayment = loanAmount - downPayment;
       const annualRate = parseFloat(document.getElementById('interestRate').value) / 100;
       const r = annualRate / 12; // Monthly interest rate
       const n = parseInt(document.getElementById('loanTerm').value) * 12; // Total payments
+      const propertyTax = parseFloat(document.getElementById('propertyTax').value.replace(/,/g, '')) || 0;
+      const pmi = parseFloat(document.getElementById('pmi').value) / 100 || 0;
+      const homeIns = parseFloat(document.getElementById('homeIns').value.replace(/,/g, '')) || 0;
+      const hoa = parseFloat(document.getElementById('hoa').value.replace(/,/g, '')) || 0;
       const errorMsg = document.getElementById('error');
 
-      if (isNaN(P) || P <= 0) {
-        errorMsg.innerText = "Please enter a valid loan amount.";
+      if (isNaN(loanAfterDownPayment) || loanAfterDownPayment <= 0) {
+        errorMsg.innerText = "Please enter a valid loan amount and down payment.";
         return;
       }
 
@@ -60,10 +117,13 @@
       errorMsg.innerText = ""; // Clear error message if inputs are valid
 
       // Mortgage calculation formula
-      const M = P * (r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+      const M = loanAfterDownPayment * (r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+
+      // Add other factors (property tax, PMI, home insurance, HOA)
+      const totalMonthlyPayment = M + (propertyTax / 12) + (loanAfterDownPayment * pmi / 100) + (homeIns / 12) + hoa;
 
       // Display result
-      document.getElementById('payment').innerText = `$${M.toFixed(2)}`;
+      document.getElementById('payment').innerText = `$${totalMonthlyPayment.toFixed(2).toLocaleString()}`;
     }
   </script>
 </body>
