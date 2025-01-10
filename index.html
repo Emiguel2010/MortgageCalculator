@@ -5,52 +5,120 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mortgage Calculator</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    .container {
+      width: 80%;
+      margin: 0 auto;
+      padding-top: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .calculator {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .calculator label {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .calculator label input {
+      width: 180px;
+      margin-left: 10px;
+    }
+
+    .calculator label span {
+      margin-left: 10px;
+    }
+
+    .calculator .row {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .row input {
+      width: 150px;
+    }
+
+    .row label {
+      display: flex;
+      align-items: center;
+      flex: 1;
+    }
+
+    #result {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    #error {
+      text-align: center;
+      color: red;
+    }
+  </style>
 </head>
 <body>
   <div class="container">
     <h1>Mortgage Calculator</h1>
     <div class="calculator">
-      <label for="homeValue">Home Value ($): 
-        <input type="text" id="homeValue" placeholder="Enter home value" oninput="formatHomeValue()">
-      </label><br>
+      <div class="row">
+        <label for="homeValue">Home Value ($): 
+          <input type="text" id="homeValue" placeholder="Enter home value" oninput="formatHomeValue()">
+        </label>
 
-      <label for="downPaymentType">Down Payment Type: 
-        <input type="radio" id="downPaymentPercent" name="downPaymentType" checked> Percent 
-        <input type="radio" id="downPaymentDollar" name="downPaymentType"> Dollar
-      </label><br>
+        <label for="downPaymentType">Down Payment Type: 
+          <input type="radio" id="downPaymentPercent" name="downPaymentType" checked> Percent 
+          <input type="radio" id="downPaymentDollar" name="downPaymentType"> Dollar
+        </label>
+      </div>
 
-      <label for="downPayment">Down Payment: 
-        <input type="number" id="downPayment" placeholder="Enter down payment" value="0" oninput="calculateLoanAmount()">
-      </label><br>
+      <div class="row">
+        <label for="downPayment">Down Payment: 
+          <input type="number" id="downPayment" placeholder="Enter down payment" value="0" oninput="calculateLoanAmount()">
+        </label>
 
-      <!-- Moved Loan Amount after Down Payment here -->
-      <label for="loanAfterDownPayment">Loan Amount after Down Payment ($): 
-        <span id="loanAfterDownPayment">0</span>
-      </label><br>
+        <label for="loanAfterDownPayment">Loan Amount after Down Payment ($): 
+          <span id="loanAfterDownPayment">0</span>
+        </label>
+      </div>
 
-      <label for="interestRate">Annual Interest Rate (%): 
-        <input type="number" id="interestRate" min="0" max="100" value="5">
-      </label><br>
+      <div class="row">
+        <label for="interestRate">Annual Interest Rate (%): 
+          <input type="number" id="interestRate" min="0" max="100" value="5">
+        </label>
 
-      <label for="loanTerm">Loan Term (Years): 
-        <input type="number" id="loanTerm" value="30" min="1">
-      </label><br>
+        <label for="loanTerm">Loan Term (Years): 
+          <input type="number" id="loanTerm" value="30" min="1">
+        </label>
+      </div>
 
-      <label for="propertyTax">Property Tax ($): 
-        <input type="text" id="propertyTax" placeholder="Enter property tax" oninput="formatCurrency('propertyTax')">
-      </label><br>
+      <div class="row">
+        <label for="propertyTax">Property Tax ($): 
+          <input type="text" id="propertyTax" placeholder="Enter property tax" oninput="formatCurrency('propertyTax')">
+        </label>
 
-      <label for="pmi">PMI (%): 
-        <input type="number" id="pmi" value="0.4" step="0.1" min="0" max="100">
-      </label><br>
+        <label for="pmi">PMI (%): 
+          <input type="number" id="pmi" value="0.4" step="0.1" min="0" max="100">
+        </label>
+      </div>
 
-      <label for="homeIns">Home Insurance ($): 
-        <input type="text" id="homeIns" placeholder="Enter home insurance" oninput="formatCurrency('homeIns')">
-      </label><br>
+      <div class="row">
+        <label for="homeIns">Home Insurance ($): 
+          <input type="text" id="homeIns" placeholder="Enter home insurance" oninput="formatCurrency('homeIns')">
+        </label>
 
-      <label for="hoa">Monthly HOA ($): 
-        <input type="text" id="hoa" placeholder="Enter HOA fees" oninput="formatCurrency('hoa')">
-      </label><br>
+        <label for="hoa">Monthly HOA ($): 
+          <input type="text" id="hoa" placeholder="Enter HOA fees" oninput="formatCurrency('hoa')">
+        </label>
+      </div>
 
       <button onclick="calculateMortgage()">Calculate</button>
     </div>
