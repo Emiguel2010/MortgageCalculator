@@ -4,25 +4,66 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mortgage Calculator</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Mortgage Calculator</h1>
-  <label>Loan Amount ($): <input type="number" id="loanAmount"></label><br>
-  <label>Annual Interest Rate (%): <input type="number" id="interestRate"></label><br>
-  <label>Loan Term (Years): <input type="number" id="loanTerm"></label><br>
-  <button onclick="calculateMortgage()">Calculate</button>
-  <p id="result"></p>
+  <div class="container">
+    <h1>Mortgage Calculator</h1>
+    <div class="calculator">
+      <label for="loanAmount">Loan Amount ($): 
+        <input type="text" id="loanAmount" placeholder="Enter loan amount" oninput="formatLoanAmount()">
+      </label><br>
+
+      <label for="interestRate">Annual Interest Rate (%): 
+        <input type="number" id="interestRate" min="0" max="100" value="5">
+      </label><br>
+
+      <label for="loanTerm">Loan Term (Years): 
+        <input type="number" id="loanTerm" value="30" min="1">
+      </label><br>
+
+      <button onclick="calculateMortgage()">Calculate</button>
+    </div>
+    <div id="result">
+      <p>Your monthly payment is <span id="payment"></span></p>
+      <p id="error" style="color: red;"></p>
+    </div>
+  </div>
 
   <script>
+    // Format loan amount with commas
+    function formatLoanAmount() {
+      let loanAmountInput = document.getElementById('loanAmount');
+      let loanAmount = loanAmountInput.value.replace(/[^0-9]/g, '');
+      loanAmount = Number(loanAmount).toLocaleString();
+      loanAmountInput.value = loanAmount;
+    }
+
+    // Calculate Mortgage Payment
     function calculateMortgage() {
-      const P = parseFloat(document.getElementById('loanAmount').value);
+      const P = parseFloat(document.getElementById('loanAmount').value.replace(/,/g, ''));
       const annualRate = parseFloat(document.getElementById('interestRate').value) / 100;
       const r = annualRate / 12; // Monthly interest rate
       const n = parseInt(document.getElementById('loanTerm').value) * 12; // Total payments
+      const errorMsg = document.getElementById('error');
 
+      if (isNaN(P) || P <= 0) {
+        errorMsg.innerText = "Please enter a valid loan amount.";
+        return;
+      }
+
+      if (isNaN(annualRate) || annualRate < 0 || annualRate > 100) {
+        errorMsg.innerText = "Interest rate must be between 0% and 100%.";
+        return;
+      }
+
+      errorMsg.innerText = ""; // Clear error message if inputs are valid
+
+      // Mortgage calculation formula
       const M = P * (r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
 
-      document.getElementById('result').innerText = `Your monthly payment is $${M.toFixed(2)}`;
+      // Display result
+      document.getElementById('payment').innerText = `$${M.toFixed(2)}`;
     }
   </script>
 </body>
