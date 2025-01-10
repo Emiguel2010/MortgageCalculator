@@ -10,8 +10,8 @@
   <div class="container">
     <h1>Mortgage Calculator</h1>
     <div class="calculator">
-      <label for="loanAmount">Original Loan Amount ($): 
-        <input type="text" id="loanAmountInput" placeholder="Enter loan amount" oninput="formatLoanAmount()">
+      <label for="homeValue">Home Value ($): 
+        <input type="text" id="homeValue" placeholder="Enter home value" oninput="formatHomeValue()">
       </label><br>
 
       <label for="downPaymentType">Down Payment Type: 
@@ -66,35 +66,35 @@
       input.value = value;
     }
 
-    // Format loan amount with commas
-    function formatLoanAmount() {
-      let loanAmountInput = document.getElementById('loanAmountInput');
-      let loanAmount = loanAmountInput.value.replace(/[^0-9]/g, '');
-      loanAmount = Number(loanAmount).toLocaleString();
-      loanAmountInput.value = loanAmount;
+    // Format home value with commas
+    function formatHomeValue() {
+      let homeValueInput = document.getElementById('homeValue');
+      let homeValue = homeValueInput.value.replace(/[^0-9]/g, '');
+      homeValue = Number(homeValue).toLocaleString();
+      homeValueInput.value = homeValue;
       calculateLoanAmount();
     }
 
     // Calculate loan amount after down payment based on selected type (dollar or percentage)
     function calculateLoanAmount() {
-      let loanAmount = parseFloat(document.getElementById('loanAmountInput').value.replace(/,/g, ''));
+      let homeValue = parseFloat(document.getElementById('homeValue').value.replace(/,/g, ''));
       let downPayment = parseFloat(document.getElementById('downPayment').value.replace(/,/g, ''));
       let isPercent = document.getElementById('downPaymentPercent').checked;
 
       if (isPercent) {
         // Convert down payment to dollar value
-        downPayment = loanAmount * (downPayment / 100);
+        downPayment = homeValue * (downPayment / 100);
       }
 
-      const loanAfterDownPayment = loanAmount - downPayment;
-      document.getElementById('loanAfterDownPayment').innerText = `$${loanAfterDownPayment.toLocaleString()}`;
+      const loanAmount = homeValue - downPayment;
+      document.getElementById('loanAfterDownPayment').innerText = `$${loanAmount.toLocaleString()}`;
     }
 
     // Calculate Mortgage Payment
     function calculateMortgage() {
-      const loanAmount = parseFloat(document.getElementById('loanAmountInput').value.replace(/,/g, ''));
+      const homeValue = parseFloat(document.getElementById('homeValue').value.replace(/,/g, ''));
       const downPayment = parseFloat(document.getElementById('downPayment').value.replace(/,/g, ''));
-      const loanAfterDownPayment = loanAmount - downPayment;
+      const loanAmount = homeValue - downPayment;
       const annualRate = parseFloat(document.getElementById('interestRate').value) / 100;
       const r = annualRate / 12; // Monthly interest rate
       const n = parseInt(document.getElementById('loanTerm').value) * 12; // Total payments
@@ -104,8 +104,8 @@
       const hoa = parseFloat(document.getElementById('hoa').value.replace(/,/g, '')) || 0;
       const errorMsg = document.getElementById('error');
 
-      if (isNaN(loanAfterDownPayment) || loanAfterDownPayment <= 0) {
-        errorMsg.innerText = "Please enter a valid loan amount and down payment.";
+      if (isNaN(loanAmount) || loanAmount <= 0) {
+        errorMsg.innerText = "Please enter a valid home value and down payment.";
         return;
       }
 
@@ -117,10 +117,10 @@
       errorMsg.innerText = ""; // Clear error message if inputs are valid
 
       // Mortgage calculation formula
-      const M = loanAfterDownPayment * (r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+      const M = loanAmount * (r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
 
       // Add other factors (property tax, PMI, home insurance, HOA)
-      const totalMonthlyPayment = M + (propertyTax / 12) + (loanAfterDownPayment * pmi / 100) + (homeIns / 12) + hoa;
+      const totalMonthlyPayment = M + (propertyTax / 12) + (loanAmount * pmi / 100) + (homeIns / 12) + hoa;
 
       // Display result
       document.getElementById('payment').innerText = `$${totalMonthlyPayment.toFixed(2).toLocaleString()}`;
